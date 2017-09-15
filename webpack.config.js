@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'rcgber.js',
-    library: 'Rcgber',
+    library: 'rcgber',
     libraryTarget: 'umd'
   },
   module: {

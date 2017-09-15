@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["Rcgber"] = factory();
+		exports["rcgber"] = factory();
 	else
-		root["Rcgber"] = factory();
+		root["rcgber"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -80,112 +80,80 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+module.exports = function rcgber($el) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var _options$num = options.num,
+      num = _options$num === undefined ? 3 : _options$num,
+      _options$size = options.size,
+      size = _options$size === undefined ? 30 : _options$size,
+      _options$alpha = options.alpha,
+      alpha = _options$alpha === undefined ? 0.15 : _options$alpha;
 
-var Rcgber = function Rcgber(options) {
-  _classCallCheck(this, Rcgber);
+  var spotNum = num.toFixed ? num + 1 : getRangeRandom(num.max, num.min);
 
-  this.options = Object.assign({
-    el: document.body,
-    num: 3,
-    min: 30,
-    max: 50,
-    alpha: 0.15
-  }, options);
+  if (typeof $el === 'string') $el = document.querySelector($el);
+
+  var $container = document.createElement('div');
+  $container.classList.add('rcgber-container');
+
+  for (var i = 1; i <= spotNum; i++) {
+    var _getSpotOffset = getSpotOffset(spotNum, i),
+        top = _getSpotOffset.top,
+        left = _getSpotOffset.left;
+
+    var spotSize = size.toFixed ? size : getRangeRandom(size.max, size.min);
+    $container.appendChild(createSpot({ top: top, left: left, alpha: alpha, size: spotSize }));
+  }
+
+  $el.insertAdjacentElement('afterBegin', $container);
 };
 
-Object.assign(Rcgber.prototype, {
-  render: function render() {
-    var num = this.options.num;
+function createSpot(_ref) {
+  var top = _ref.top,
+      left = _ref.left,
+      size = _ref.size,
+      alpha = _ref.alpha;
 
-    var $container = document.createElement('div');
+  var halfSize = size / 2;
 
-    Object.assign($container.style, {
-      overflow: 'hidden',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%'
-    });
+  var _getRandomRGB = getRandomRGB(),
+      r = _getRandomRGB.r,
+      g = _getRandomRGB.g,
+      b = _getRandomRGB.b;
 
-    for (var i = 0; i < num; i++) {
-      var alpha = this.options.alpha;
+  var $spot = document.createElement('span');
+  $spot.classList.add('rcgber-spot');
 
-      var size = Math.round(Math.random() * (this.options.max - this.options.min) + this.options.min);
+  Object.assign($spot.style, {
+    top: top + '%',
+    left: left + '%',
+    width: size + 'px',
+    height: size + 'px',
+    marginTop: '-' + halfSize + 'px',
+    marginLeft: '-' + halfSize + 'px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')'
+  });
 
-      var _getPosition = getPosition(num, i + 1),
-          top = _getPosition.top,
-          left = _getPosition.left;
-
-      $container.appendChild(new Spot({ top: top, left: left, size: size, alpha: alpha }));
-    }
-
-    this.options.el.appendChild($container);
-  }
-});
-
-var Spot = function Spot(options) {
-  _classCallCheck(this, Spot);
-
-  this.options = Object.assign({
-    top: '50%',
-    left: '50%',
-    size: 30,
-    alpha: .15
-  }, options);
-
-  return this.makeSpot();
-};
-
-Object.assign(Spot.prototype, {
-  makeSpot: function makeSpot() {
-    var $spot = document.createElement('span');
-    var _options = this.options,
-        top = _options.top,
-        left = _options.left,
-        size = _options.size,
-        alpha = _options.alpha;
-
-    var halfSize = size / 2;
-
-    var _getRandomRGB = getRandomRGB(),
-        R = _getRandomRGB.R,
-        G = _getRandomRGB.G,
-        B = _getRandomRGB.B;
-
-    Object.assign($spot.style, {
-      position: 'absolute',
-      top: top + '%',
-      left: left + '%',
-      width: size + 'px',
-      height: size + 'px',
-      marginTop: '-' + halfSize + 'px',
-      marginLeft: '-' + halfSize + 'px',
-      borderRadius: '50%',
-      backgroundColor: 'rgba(' + R + ', ' + G + ', ' + B + ', ' + alpha + ')'
-    });
-
-    return $spot;
-  }
-});
-
-function getRandomRGB() {
-  var R = Math.round(Math.random() * 256);
-  var G = Math.round(Math.random() * 256);
-  var B = Math.round(Math.random() * 256);
-
-  return { R: R, G: G, B: B };
+  return $spot;
 }
 
-function getPosition(num, index) {
-  var top = Math.round(Math.random() * 100);
-  var left = Math.round(100 / (num + 1) * index);
+function getRandomRGB() {
+  var r = Math.round(Math.random() * 256);
+  var g = Math.round(Math.random() * 256);
+  var b = Math.round(Math.random() * 256);
+  return { r: r, g: g, b: b };
+}
 
+function getSpotOffset(num, index) {
+  var top = Math.round(Math.random() * 100);
+  var left = Math.round(100 / num * index);
   return { top: top, left: left };
 }
 
-module.exports = Rcgber;
+function getRangeRandom(min, max) {
+  return Math.round(Math.random() * (max - min)) + min;
+}
 
 /***/ })
 /******/ ]);

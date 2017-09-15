@@ -1,90 +1,54 @@
-class Rcgber {
-  constructor (options) {
-    this.options = Object.assign({
-      el: document.body,
-      num: 3,
-      min: 30,
-      max: 50,
-      alpha: 0.15
-    }, options)
+module.exports = function rcgber ($el, options = {}) {
+  const { num = 3, size = 30, alpha = 0.15 } = options
+  const spotNum = num.toFixed ? num + 1 : getRangeRandom(num.max, num.min)
+
+  if (typeof $el === 'string') $el = document.querySelector($el)
+
+  const $container = document.createElement('div')
+  $container.classList.add('rcgber-container')
+
+  for (let i = 1; i <= spotNum; i++) {
+    const { top, left } = getSpotOffset(spotNum, i)
+    const spotSize = size.toFixed ? size : getRangeRandom(size.max, size.min)
+    $container.appendChild(createSpot({ top, left, alpha, size: spotSize }))
   }
+
+  $el.insertAdjacentElement('afterBegin', $container)
 }
 
-Object.assign(Rcgber.prototype, {
-  render () {
-    const { num } = this.options
-    const $container = document.createElement('div')
+function createSpot ({ top, left, size, alpha }) {
+  const halfSize = size / 2
+  const { r, g, b } = getRandomRGB()
+  const $spot = document.createElement('span')
+  $spot.classList.add('rcgber-spot')
 
-    Object.assign($container.style, {
-      overflow: 'hidden',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%'
-    })
+  Object.assign($spot.style, {
+    top: `${top}%`,
+    left: `${left}%`,
+    width: `${size}px`,
+    height: `${size}px`,
+    marginTop: `-${halfSize}px`,
+    marginLeft: `-${halfSize}px`,
+    borderRadius: '50%',
+    backgroundColor: `rgba(${r}, ${g}, ${b}, ${alpha})`
+  })
 
-    for (let i = 0; i < num; i++) {
-      const { alpha } = this.options
-      const size = Math.round(Math.random() * (this.options.max - this.options.min) + this.options.min)
-      const { top, left } = getPosition(num, i + 1)
-
-      $container.appendChild(new Spot({ top, left, size, alpha }))
-    }
-
-    this.options.el.appendChild($container)
-  }
-})
-
-class Spot {
-  constructor (options) {
-    this.options = Object.assign({
-      top: '50%',
-      left: '50%',
-      size: 30,
-      alpha: .15
-    }, options)
-
-    return this.makeSpot()
-  }
+  return $spot
 }
-
-Object.assign(Spot.prototype, {
-  makeSpot () {
-    const $spot = document.createElement('span')
-    const { top, left, size, alpha } = this.options
-    const halfSize = size / 2
-    const { R, G, B } = getRandomRGB()
-
-    Object.assign($spot.style, {
-      position: 'absolute',
-      top: `${top}%`,
-      left: `${left}%`,
-      width: `${size}px`,
-      height: `${size}px`,
-      marginTop: `-${halfSize}px`,
-      marginLeft: `-${halfSize}px`,
-      borderRadius: '50%',
-      backgroundColor: `rgba(${R}, ${G}, ${B}, ${alpha})`
-    })
-
-    return $spot
-  }
-})
 
 function getRandomRGB () {
-  const R = Math.round(Math.random() * 256)
-  const G = Math.round(Math.random() * 256)
-  const B = Math.round(Math.random() * 256)
-
-  return { R, G, B }
+  const r = Math.round(Math.random() * 256)
+  const g = Math.round(Math.random() * 256)
+  const b = Math.round(Math.random() * 256)
+  return { r, g, b }
 }
 
-function getPosition (num, index) {
+function getSpotOffset (num, index) {
   const top = Math.round(Math.random() * 100)
-  const left = Math.round((100 / (num + 1) * index))
-
+  const left = Math.round((100 / num * index))
   return { top, left }
 }
 
-module.exports = Rcgber
+function getRangeRandom (min, max) {
+  return Math.round(Math.random() * (max - min)) + min
+}
