@@ -7,14 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <link rel="stylesheet" href="../src/index.css">
+  <link rel="stylesheet" href="../src/icon.css">
 </head>
 
 <body>
   <script src="../dist/rcgber.js"></script>
   <script>
     rcgber(document.body, {
-      num: { min: 10, max: 30 },
-      size: { min: 30, max: 300 }
+      icons: ['circle', 'heart', 'envelope'],
+      num: 100,
+      size: 50
     })
   </script>
 </body>

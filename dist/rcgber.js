@@ -80,39 +80,54 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
+var _iconStyle = __webpack_require__(1);
+
+var _iconStyle2 = _interopRequireDefault(_iconStyle);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 module.exports = function rcgber($el) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _options$num = options.num,
+  var _options$icons = options.icons,
+      icons = _options$icons === undefined ? ['circle'] : _options$icons,
+      _options$num = options.num,
       num = _options$num === undefined ? 3 : _options$num,
       _options$size = options.size,
       size = _options$size === undefined ? 30 : _options$size,
       _options$alpha = options.alpha,
       alpha = _options$alpha === undefined ? 0.15 : _options$alpha;
 
-  var spotNum = num.toFixed ? num + 1 : getRangeRandom(num.max, num.min);
+  var iconNum = num.toFixed ? num + 1 : getRangeRandom(num.max, num.min);
+  var lightAlpha = alpha + 0.1;
 
   if (typeof $el === 'string') $el = document.querySelector($el);
 
   var $container = document.createElement('div');
-  $container.classList.add('rcgber-container');
+  $container.className = 'rcgber-container';
 
-  for (var i = 1; i <= spotNum; i++) {
-    var _getSpotOffset = getSpotOffset(spotNum, i),
-        top = _getSpotOffset.top,
-        left = _getSpotOffset.left;
+  var iconLength = icons.length;
 
-    var spotSize = size.toFixed ? size : getRangeRandom(size.max, size.min);
-    $container.appendChild(createSpot({ top: top, left: left, alpha: alpha, size: spotSize }));
+  for (var i = 1; i <= iconNum; i++) {
+    var _getIconOffset = getIconOffset(iconNum, i),
+        top = _getIconOffset.top,
+        left = _getIconOffset.left;
+
+    var icon = iconLength === 1 ? icons[0] : icons[Math.floor(Math.random() * iconLength)];
+    var iconSize = size.toFixed ? size : getRangeRandom(size.max, size.min);
+
+    $container.appendChild(createIcon({ icon: icon, top: top, left: left, alpha: alpha, lightAlpha: lightAlpha, size: iconSize }));
   }
 
   $el.insertAdjacentElement('afterBegin', $container);
 };
 
-function createSpot(_ref) {
-  var top = _ref.top,
+function createIcon(_ref) {
+  var icon = _ref.icon,
+      top = _ref.top,
       left = _ref.left,
       size = _ref.size,
-      alpha = _ref.alpha;
+      alpha = _ref.alpha,
+      lightAlpha = _ref.lightAlpha;
 
   var halfSize = size / 2;
 
@@ -121,21 +136,17 @@ function createSpot(_ref) {
       g = _getRandomRGB.g,
       b = _getRandomRGB.b;
 
-  var $spot = document.createElement('span');
-  $spot.classList.add('rcgber-spot');
+  var $icon = document.createElement('span');
+  $icon.className = 'rcgber-icon rcgber-icon--' + icon;
 
-  Object.assign($spot.style, {
+  Object.assign($icon.style, {
     top: top + '%',
     left: left + '%',
-    width: size + 'px',
-    height: size + 'px',
-    marginTop: '-' + halfSize + 'px',
-    marginLeft: '-' + halfSize + 'px',
-    borderRadius: '50%',
+    color: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + lightAlpha + ')',
     backgroundColor: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')'
-  });
+  }, _iconStyle2.default[icon](size));
 
-  return $spot;
+  return $icon;
 }
 
 function getRandomRGB() {
@@ -145,7 +156,7 @@ function getRandomRGB() {
   return { r: r, g: g, b: b };
 }
 
-function getSpotOffset(num, index) {
+function getIconOffset(num, index) {
   var top = Math.round(Math.random() * 100);
   var left = Math.round(100 / num * index);
   return { top: top, left: left };
@@ -153,6 +164,45 @@ function getSpotOffset(num, index) {
 
 function getRangeRandom(min, max) {
   return Math.round(Math.random() * (max - min)) + min;
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  circle: function circle(size) {
+    var halfSize = size / 2;
+    return { width: size + "px", height: size + "px", marginTop: "-" + halfSize + "px", marginLeft: "-" + halfSize + "px" };
+  },
+  heart: function heart(size) {
+    size = (size / 1.5).toFixed(2);
+    var halfSize = size / 2;
+    return {
+      width: size + "px",
+      height: size + "px",
+      transform: "translate(-" + halfSize + "px, -" + halfSize + "px) rotate(" + getRandomRotate() + "deg)"
+    };
+  },
+  envelope: function envelope(size) {
+    var height = Math.sqrt(size * size / (2 * (1 - Math.cos(90)))).toFixed(2);
+    return {
+      width: size + "px",
+      height: height + "px",
+      transform: "translate(-" + size / 2 + "px, -" + height / 2 + "px) rotate(" + getRandomRotate() + "deg)"
+    };
+  }
+};
+
+
+function getRandomRotate() {
+  return Math.round(Math.random() * 360);
 }
 
 /***/ })

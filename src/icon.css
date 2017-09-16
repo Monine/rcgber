@@ -1,0 +1,51 @@
+.rcgber-icon--circle {
+  border-radius: 50%;
+}
+
+.rcgber-icon--heart::before,
+.rcgber-icon--heart::after {
+  content: '';
+  position: absolute;
+  background-color: inherit;
+}
+
+.rcgber-icon--heart::before {
+  top: -60%;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+
+.rcgber-icon--heart::after {
+  top: 0;
+  left: 100%;
+  width: 60%;
+  height: 100%;
+  border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+}
+
+.rcgber-icon--envelope {
+  border: 1px solid currentColor;
+}
+
+.rcgber-icon--envelope::before,
+.rcgber-icon--envelope::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background-color: currentColor;
+  transform-origin: top;
+}
+
+.rcgber-icon--envelope::before {
+  left: -1px;
+  transform: rotate(-60deg);
+}
+
+.rcgber-icon--envelope::after {
+  right: -1px;
+  transform: rotate(60deg);
+}
