@@ -10,3 +10,9 @@
 .rcgber-icon {
   position: absolute;
 }
+
+.rcgber-icon::before,
+.rcgber-icon::after {
+  content: '';
+  position: absolute;
+}

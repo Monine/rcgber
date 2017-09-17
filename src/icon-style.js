@@ -13,11 +13,13 @@ export default {
     }
   },
   envelope (size) {
-    const height = Math.sqrt((size * size) / (2 * (1 - Math.cos(90)))).toFixed(2)
+    // 弧度计算公式：PI * 角度 / 180
+    const halfSize = size / 2
+    const height = halfSize / Math.cos(Math.PI / 6) + 1
     return {
       width: `${size}px`,
       height: `${height}px`,
-      transform: `translate(-${size / 2}px, -${height / 2}px) rotate(${getRandomRotate()}deg)`
+      transform: `translate(-${halfSize}px, -${height / 2}px) rotate(${getRandomRotate()}deg)`
     }
   }
 }

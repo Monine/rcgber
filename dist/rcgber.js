@@ -90,25 +90,27 @@ module.exports = function rcgber($el) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _options$icons = options.icons,
       icons = _options$icons === undefined ? ['circle'] : _options$icons,
-      _options$num = options.num,
-      num = _options$num === undefined ? 3 : _options$num,
       _options$size = options.size,
       size = _options$size === undefined ? 30 : _options$size,
       _options$alpha = options.alpha,
-      alpha = _options$alpha === undefined ? 0.15 : _options$alpha;
+      alpha = _options$alpha === undefined ? 0.15 : _options$alpha,
+      containerStyle = options.containerStyle;
+  var num = options.num;
 
-  var iconNum = num.toFixed ? num + 1 : getRangeRandom(num.max, num.min);
+  num = num.toFixed ? num : getRangeRandom(num.max, num.min);
+  var rangeNum = num + 1;
   var lightAlpha = alpha + 0.1;
 
   if (typeof $el === 'string') $el = document.querySelector($el);
 
   var $container = document.createElement('div');
   $container.className = 'rcgber-container';
+  Object.assign($container.style, containerStyle);
 
   var iconLength = icons.length;
 
-  for (var i = 1; i <= iconNum; i++) {
-    var _getIconOffset = getIconOffset(iconNum, i),
+  for (var i = 1; i < rangeNum; i++) {
+    var _getIconOffset = getIconOffset(rangeNum, i),
         top = _getIconOffset.top,
         left = _getIconOffset.left;
 
@@ -128,8 +130,6 @@ function createIcon(_ref) {
       size = _ref.size,
       alpha = _ref.alpha,
       lightAlpha = _ref.lightAlpha;
-
-  var halfSize = size / 2;
 
   var _getRandomRGB = getRandomRGB(),
       r = _getRandomRGB.r,
@@ -191,11 +191,13 @@ exports.default = {
     };
   },
   envelope: function envelope(size) {
-    var height = Math.sqrt(size * size / (2 * (1 - Math.cos(90)))).toFixed(2);
+    // 弧度计算公式：PI * 角度 / 180
+    var halfSize = size / 2;
+    var height = halfSize / Math.cos(Math.PI / 6) + 1;
     return {
       width: size + "px",
       height: height + "px",
-      transform: "translate(-" + size / 2 + "px, -" + height / 2 + "px) rotate(" + getRandomRotate() + "deg)"
+      transform: "translate(-" + halfSize + "px, -" + height / 2 + "px) rotate(" + getRandomRotate() + "deg)"
     };
   }
 };

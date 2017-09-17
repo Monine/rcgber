@@ -4,8 +4,6 @@
 
 .rcgber-icon--heart::before,
 .rcgber-icon--heart::after {
-  content: '';
-  position: absolute;
   background-color: inherit;
 }
 

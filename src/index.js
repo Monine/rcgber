@@ -1,19 +1,22 @@
 import iconStyle from './icon-style'
 
 module.exports = function rcgber ($el, options = {}) {
-  const { icons = ['circle'], num = 3, size = 30, alpha = 0.15 } = options
-  const iconNum = num.toFixed ? num + 1 : getRangeRandom(num.max, num.min)
+  const { icons = ['circle'], size = 30, alpha = 0.15, containerStyle } = options
+  let { num } = options
+  num = num.toFixed ? num : getRangeRandom(num.max, num.min)
+  const rangeNum = num + 1
   const lightAlpha = alpha + 0.1
 
   if (typeof $el === 'string') $el = document.querySelector($el)
 
   const $container = document.createElement('div')
   $container.className = 'rcgber-container'
+  Object.assign($container.style, containerStyle)
 
   const iconLength = icons.length
 
-  for (let i = 1; i <= iconNum; i++) {
-    const { top, left } = getIconOffset(iconNum, i)
+  for (let i = 1; i < rangeNum; i++) {
+    const { top, left } = getIconOffset(rangeNum, i)
     const icon = iconLength === 1 ? icons[0] : icons[Math.floor(Math.random() * iconLength)]
     const iconSize = size.toFixed ? size : getRangeRandom(size.max, size.min)
 
@@ -24,7 +27,6 @@ module.exports = function rcgber ($el, options = {}) {
 }
 
 function createIcon ({ icon, top, left, size, alpha, lightAlpha }) {
-  const halfSize = size / 2
   const { r, g, b } = getRandomRGB()
   const $icon = document.createElement('span')
   $icon.className = `rcgber-icon rcgber-icon--${icon}`
