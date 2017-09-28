@@ -88,18 +88,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = function rcgber($el) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _options$icons = options.icons,
-      icons = _options$icons === undefined ? ['circle'] : _options$icons,
+  var icons = options.icons,
+      containerStyle = options.containerStyle,
       _options$size = options.size,
       size = _options$size === undefined ? 30 : _options$size,
       _options$alpha = options.alpha,
-      alpha = _options$alpha === undefined ? 0.15 : _options$alpha,
-      containerStyle = options.containerStyle;
+      alpha = _options$alpha === undefined ? 0.15 : _options$alpha;
   var num = options.num;
 
   num = num.toFixed ? num : getRangeRandom(num.max, num.min);
   var rangeNum = num + 1;
-  var lightAlpha = alpha + 0.1;
 
   if (typeof $el === 'string') $el = document.querySelector($el);
 
@@ -115,9 +113,11 @@ module.exports = function rcgber($el) {
         left = _getIconOffset.left;
 
     var icon = iconLength === 1 ? icons[0] : icons[Math.floor(Math.random() * iconLength)];
-    var iconSize = size.toFixed ? size : getRangeRandom(size.max, size.min);
+    var iconSize = icon.size ? icon.size.toFixed ? icon.size : getRangeRandom(icon.size.min, icon.size.max) : size.toFixed ? size : getRangeRandom(size.min, size.max);
+    var iconAlpha = icon.alpha || alpha;
+    var iconLightAlpha = iconAlpha + 0.1;
 
-    $container.appendChild(createIcon({ icon: icon, top: top, left: left, alpha: alpha, lightAlpha: lightAlpha, size: iconSize }));
+    $container.appendChild(createIcon({ icon: icon, top: top, left: left, alpha: iconAlpha, lightAlpha: iconLightAlpha, size: iconSize }));
   }
 
   $el.insertAdjacentElement('afterBegin', $container);
@@ -136,16 +136,33 @@ function createIcon(_ref) {
       g = _getRandomRGB.g,
       b = _getRandomRGB.b;
 
-  var $icon = document.createElement('span');
-  $icon.className = 'rcgber-icon rcgber-icon--' + icon;
+  var $icon = null;
 
+  if (!icon.type || icon.type === 'css') {
+    var name = icon.name;
+
+    $icon = document.createElement('span');
+    $icon.className = 'rcgber-icon--' + name;
+    Object.assign($icon.style, {
+      color: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + lightAlpha + ')',
+      backgroundColor: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')'
+    }, _iconStyle2.default[name](size));
+  } else if (icon.type === 'img') {
+    $icon = document.createElement('img');
+    $icon.src = icon.src;
+    $icon.className = 'rcgber-icon--img';
+    Object.assign($icon.style, {
+      width: size + 'px',
+      opacity: alpha,
+      transform: 'translate(-50%, -50%) rotate(' + Math.round(Math.random() * 360) + 'deg)'
+    });
+  }
+
+  $icon.className += ' rcgber-icon';
   Object.assign($icon.style, {
     top: top + '%',
-    left: left + '%',
-    color: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + lightAlpha + ')',
-    backgroundColor: 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')'
-  }, _iconStyle2.default[icon](size));
-
+    left: left + '%'
+  });
   return $icon;
 }
 

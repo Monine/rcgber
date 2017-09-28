@@ -5,4 +5,6 @@ Rich color graphic background
 
 ### TODO
 
-- [ ] 支持 canvas 和 HTML 渲染
+- [x] 支持自定义图片
+- [x] 支持对单个图形设置大小和透明度
+- [ ] 支持 canvas 和 svg 渲染

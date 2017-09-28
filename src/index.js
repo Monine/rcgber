@@ -1,11 +1,10 @@
 import iconStyle from './icon-style'
 
 module.exports = function rcgber ($el, options = {}) {
-  const { icons = ['circle'], size = 30, alpha = 0.15, containerStyle } = options
+  const { icons, containerStyle, size = 30, alpha = 0.15 } = options
   let { num } = options
   num = num.toFixed ? num : getRangeRandom(num.max, num.min)
   const rangeNum = num + 1
-  const lightAlpha = alpha + 0.1
 
   if (typeof $el === 'string') $el = document.querySelector($el)
 
@@ -18,9 +17,13 @@ module.exports = function rcgber ($el, options = {}) {
   for (let i = 1; i < rangeNum; i++) {
     const { top, left } = getIconOffset(rangeNum, i)
     const icon = iconLength === 1 ? icons[0] : icons[Math.floor(Math.random() * iconLength)]
-    const iconSize = size.toFixed ? size : getRangeRandom(size.max, size.min)
+    const iconSize = icon.size
+      ? icon.size.toFixed ? icon.size : getRangeRandom(icon.size.min, icon.size.max)
+      : size.toFixed ? size : getRangeRandom(size.min, size.max)
+    const iconAlpha = icon.alpha || alpha
+    const iconLightAlpha = iconAlpha + 0.1
 
-    $container.appendChild(createIcon({ icon, top, left, alpha, lightAlpha, size: iconSize }))
+    $container.appendChild(createIcon({ icon, top, left, alpha: iconAlpha, lightAlpha: iconLightAlpha, size: iconSize }))
   }
 
   $el.insertAdjacentElement('afterBegin', $container)
@@ -28,16 +31,32 @@ module.exports = function rcgber ($el, options = {}) {
 
 function createIcon ({ icon, top, left, size, alpha, lightAlpha }) {
   const { r, g, b } = getRandomRGB()
-  const $icon = document.createElement('span')
-  $icon.className = `rcgber-icon rcgber-icon--${icon}`
+  let $icon = null
 
+  if (!icon.type || icon.type === 'css') {
+    const { name } = icon
+    $icon = document.createElement('span')
+    $icon.className = `rcgber-icon--${name}`
+    Object.assign($icon.style, {
+      color: `rgba(${r}, ${g}, ${b}, ${lightAlpha})`,
+      backgroundColor: `rgba(${r}, ${g}, ${b}, ${alpha})`
+    }, iconStyle[name](size))
+  } else if (icon.type === 'img') {
+    $icon = document.createElement('img')
+    $icon.src = icon.src
+    $icon.className = 'rcgber-icon--img'
+    Object.assign($icon.style, {
+      width: `${size}px`,
+      opacity: alpha,
+      transform: `translate(-50%, -50%) rotate(${Math.round(Math.random() * 360)}deg)`
+    })
+  }
+
+  $icon.className += ' rcgber-icon'
   Object.assign($icon.style, {
     top: `${top}%`,
-    left: `${left}%`,
-    color: `rgba(${r}, ${g}, ${b}, ${lightAlpha})`,
-    backgroundColor: `rgba(${r}, ${g}, ${b}, ${alpha})`
-  }, iconStyle[icon](size))
-
+    left: `${left}%`
+  })
   return $icon
 }
 

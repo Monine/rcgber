@@ -17,9 +17,14 @@
       containerStyle: {
         position: 'fixed'
       },
-      icons: ['circle', 'heart', 'envelope'],
-      num: 20,
-      size: 50
+      icons: [
+        { name: 'circle', size: { min: 30, max: 60 } },
+        { name: 'heart' },
+        { type: 'img', src: './icons/truck.png', alpha: 1 }
+      ],
+      num: 100,
+      size: 50,
+      alpha: .2
     })
   </script>
 </body>
