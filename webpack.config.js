@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'rcgber.js',
+    filename: process.env.NODE_ENV === 'production' ? 'rcgber.min.js' : 'rcgber.js',
     library: 'rcgber',
     libraryTarget: 'umd'
   },
@@ -16,8 +16,23 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         },
-        include: path.join(__dirname, 'src')
+        include: [
+          resolve('src')
+        ],
+        exclude: [
+          resolve('node_modules')
+        ]
       }
     ]
+  },
+  resolve: {
+    modules: [
+      'node_modules',
+      resolve('src')
+    ]
   }
+}
+
+function resolve (dir) {
+  return path.join(__dirname, dir)
 }
