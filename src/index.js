@@ -12,11 +12,10 @@ module.exports = function rcgber ($el, options = {}) {
   $container.className = 'rcgber-container'
   Object.assign($container.style, containerStyle)
 
-  const iconLength = icons.length
-
+  const iconLen = icons.length
   for (let i = 1; i < rangeNum; i++) {
     const { top, left } = getIconOffset(rangeNum, i)
-    const icon = iconLength === 1 ? icons[0] : icons[Math.floor(Math.random() * iconLength)]
+    const icon = iconLen === 1 ? icons[0] : icons[Math.floor(Math.random() * iconLen)]
     const iconSize = icon.size
       ? icon.size.toFixed ? icon.size : getRangeRandom(icon.size.min, icon.size.max)
       : size.toFixed ? size : getRangeRandom(size.min, size.max)
@@ -57,6 +56,7 @@ function createIcon ({ icon, top, left, size, alpha, lightAlpha }) {
     top: `${top}%`,
     left: `${left}%`
   })
+
   return $icon
 }
 
